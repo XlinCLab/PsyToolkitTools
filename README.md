@@ -3,6 +3,19 @@
 ## Introduction
 These scripts serve to process experiment/survey results conducted using the online platform [PsyToolkit](https://www.psytoolkit.org/).
 
+## Setup
+These scripts require [Python 3](https://www.python.org/downloads/) to run. Please ensure you have installed Python before proceeding with setup instructions.
+
+To install Python dependencies for these tools, please run the following command:
+```
+./setup_venv.sh && source .venv/bin/activate
+```
+
+The above needs to be run only the first time for initial setup. Subsequently, it is only necessary to activate the Python virtual environment using this command:
+```
+source .venv/bin/activate
+```
+
 ## Process survey results
 Survey results downloaded from PsyToolkit will be in `.zip` file format. 
 
@@ -15,7 +28,7 @@ Optional input:
 
 Example command syntax:
 ```
-python extract_psytoolkit_results.py --data /path/to/your/psytoolkit/results/zip/file.zip --outfile /path/to/your/desired/results/file.csv 
+python3 extract_psytoolkit_results.py --data /path/to/your/psytoolkit/results/zip/file.zip --outfile /path/to/your/desired/results/file.csv 
 ```
 
 The results CSV file will list test subject IDs and experiments as columns, with one line per test subject with that test subject's extracted measures per experiment.
