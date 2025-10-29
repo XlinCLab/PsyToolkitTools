@@ -1,11 +1,12 @@
 import argparse
 import logging
 import os
-import pandas as pd
 import zipfile
+from collections import defaultdict
 from typing import Callable
 
-from collections import defaultdict
+import pandas as pd
+
 from process_digitspan import main as process_digitspan
 from process_flanker import main as process_flanker
 from process_nback import main as process_nback
