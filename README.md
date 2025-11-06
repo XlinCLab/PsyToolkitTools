@@ -4,7 +4,7 @@
 These scripts serve to process experiment/survey results conducted using the online platform [PsyToolkit](https://www.psytoolkit.org/).
 
 ## Setup
-These scripts require [Python 3](https://www.python.org/downloads/) to run. Please ensure you have installed Python before proceeding with setup instructions.
+These scripts require [Python 3.9](https://www.python.org/downloads/) or later to run. Please ensure you have installed Python before proceeding with setup instructions.
 
 To install Python dependencies for these tools, please run the following command:
 ```
