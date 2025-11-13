@@ -62,13 +62,34 @@ def get_participant_data_files(data_zipfile: str,
     elif os.path.isdir(data_zipfile):
         logger.info(f"Found already unzipped directory {data_zipfile}")
         unzipped_directory = data_zipfile
+
+    # Extract names of component experiments
     experiment_names = get_experiment_names(unzipped_directory)
+    
+    # Load data summary file
     data_summary_file = os.path.join(unzipped_directory, "data.csv")
-    data_summary_df = pd.read_csv(data_summary_file)
-    participant_data = defaultdict(lambda: {})
     participant_id_column = participant_id_variable_name + "_1"
+    data_summary_df = pd.read_csv(data_summary_file)
+    # Drop and warn about any NA entries
+    n_entries = len(data_summary_df)
+    data_summary_df = data_summary_df.dropna()
+    n_valid_entries = len(data_summary_df)
+    n_empty_entries = n_entries - n_valid_entries
+    if n_empty_entries > 0:
+        logger.warning(f"Dropped {n_empty_entries}/{n_entries} entries with NA values")
+    logger.info(f"Found data for {n_valid_entries} participants")
+
+    # Validate that participant IDs are unique
+    if n_valid_entries != len(data_summary_df[participant_id_column].unique()):
+        participant_ids = data_summary_df[participant_id_column].to_list()
+        duplicate_ids = sorted(list(set(participant_id for participant_id in participant_ids if participant_ids.count(participant_id) > 1)))
+        duplicate_id_str = ", ".join([str(dup) for dup in duplicate_ids])
+        raise ValueError(f"Participant IDs <{duplicate_id_str}> are not unique!")
+
+    # Get participant data files
+    participant_data = defaultdict(lambda: {})
     for _, row in data_summary_df.iterrows():
-        participant_id = row[participant_id_column]
+        participant_id = str(row[participant_id_column])
         for experiment_name in experiment_names:
             exp_column_name = experiment_name + "_1"
             participant_exp_file = row[exp_column_name]
