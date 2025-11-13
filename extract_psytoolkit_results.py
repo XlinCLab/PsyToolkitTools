@@ -51,6 +51,29 @@ def get_experiment_names(unzipped_directory_path: str) -> list[str]:
     return exp_names
 
 
+def rename_duplicate_ids(df: pd.DataFrame, participant_id_column: str) -> pd.DataFrame:
+    """Check for duplicate participant IDs, and if found, rename them such that they are unique."""
+    # Identify duplicates
+    participant_ids = df[participant_id_column].to_list()
+    if len(participant_ids) == len(df[participant_id_column].unique()):
+        return df  # return df without changes in case there are no duplicates found
+    duplicate_ids = sorted(list(set(participant_id for participant_id in participant_ids if participant_ids.count(participant_id) > 1)))
+    duplicate_id_str = ", ".join([str(dup) for dup in duplicate_ids])
+    first_duplicate = duplicate_ids[0]
+    logger.warning(f"Participant IDs <{duplicate_id_str}> are not unique! These will be automatically renamed as, e.g. <{first_duplicate}_1, {first_duplicate}_2, ...>")
+
+    # Rename duplicates
+    for duplicate_id in duplicate_ids:
+        row_indices = df.index[df[participant_id_column] == duplicate_id].tolist()
+        count = 1
+        for row_idx in row_indices:
+            df.loc[row_idx, participant_id_column] = str(duplicate_id) + f"_{count}"
+            count += 1
+    
+    # Add final recursive pass to ensure that the renamed IDs are also unique
+    return rename_duplicate_ids(df, participant_id_column)
+
+
 def get_participant_data_files(data_zipfile: str,
                                participant_id_variable_name: str = DEFAULT_PARTICIPANT_ID_LABEL,
                                ) -> defaultdict:
@@ -70,6 +93,7 @@ def get_participant_data_files(data_zipfile: str,
     data_summary_file = os.path.join(unzipped_directory, "data.csv")
     participant_id_column = participant_id_variable_name + "_1"
     data_summary_df = pd.read_csv(data_summary_file)
+    data_summary_df[participant_id_column] = data_summary_df[participant_id_column].astype(str)
     # Drop and warn about any NA entries
     n_entries = len(data_summary_df)
     data_summary_df = data_summary_df.dropna()
@@ -79,12 +103,9 @@ def get_participant_data_files(data_zipfile: str,
         logger.warning(f"Dropped {n_empty_entries}/{n_entries} entries with NA values")
     logger.info(f"Found data for {n_valid_entries} participants")
 
-    # Validate that participant IDs are unique
+    # Validate/ensure that participant IDs are unique
     if n_valid_entries != len(data_summary_df[participant_id_column].unique()):
-        participant_ids = data_summary_df[participant_id_column].to_list()
-        duplicate_ids = sorted(list(set(participant_id for participant_id in participant_ids if participant_ids.count(participant_id) > 1)))
-        duplicate_id_str = ", ".join([str(dup) for dup in duplicate_ids])
-        raise ValueError(f"Participant IDs <{duplicate_id_str}> are not unique!")
+        data_summary_df = rename_duplicate_ids(data_summary_df, participant_id_column)
 
     # Get participant data files
     participant_data = defaultdict(lambda: {})
