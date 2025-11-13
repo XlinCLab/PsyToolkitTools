@@ -55,7 +55,13 @@ def get_participant_data_files(data_zipfile: str,
                                participant_id_variable_name: str = DEFAULT_PARTICIPANT_ID_LABEL,
                                ) -> defaultdict:
     """Extract a zip file containing PsyToolkit results and create a dictionary with paths to experimental results per participant."""
-    unzipped_directory = unzip(data_zipfile)
+    # Unzip the zip file
+    if data_zipfile.endswith(".zip"):
+        logger.info(f"Unzipping {data_zipfile}")
+        unzipped_directory = unzip(data_zipfile)
+    elif os.path.isdir(data_zipfile):
+        logger.info(f"Found already unzipped directory {data_zipfile}")
+        unzipped_directory = data_zipfile
     experiment_names = get_experiment_names(unzipped_directory)
     data_summary_file = os.path.join(unzipped_directory, "data.csv")
     data_summary_df = pd.read_csv(data_summary_file)
