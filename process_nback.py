@@ -20,4 +20,8 @@ def main(results_file):
     ])
     # Extract mean of score column (1 if correct, 0 if incorrect)
     mean_score = mean(results["score"])
-    return mean_score
+
+    processed_results = {
+        "mean_score": mean_score
+    }
+    return processed_results

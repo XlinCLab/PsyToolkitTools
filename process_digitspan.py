@@ -14,4 +14,9 @@ def main(results_file: str) -> int:
         contents = f.readlines()
     contents = [line.strip() for line in contents if len(line.strip()) > 0]
     last_line = contents[-1]
-    return int(last_line.split()[1])  # return second number of last line
+    longest_sequence_length = int(last_line.split()[1])  # return second number of last line
+
+    processed_results = {
+        "longest_seq_len": longest_sequence_length
+    }
+    return processed_results

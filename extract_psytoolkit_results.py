@@ -43,7 +43,7 @@ def unzip(zip_filepath: str, unzip_to: str = None) -> str:
     return unzip_to
 
 
-def get_experiment_names(unzipped_directory_path: str) -> list[str]:
+def get_experiment_names(unzipped_directory_path: str) -> set[str]:
     """Extract names of experiments from within an unzipped PsyToolkit results directory."""
     exp_data_dir = os.path.join(unzipped_directory_path, "experiment_data")
     exp_files = os.listdir(exp_data_dir)
@@ -123,13 +123,12 @@ def process_participant_results(experiment_files_dict: dict) -> dict:
     for experiment, results_file in experiment_files_dict.items():
         processing_func = get_results_processing_function(experiment)
         processed_results[experiment] = processing_func(results_file)
-    return processed_results   
+    return processed_results
 
 
 def assemble_results_df(participant_results_dict: dict) -> pd.DataFrame:
     """Assemble a dictionary of participant results into a pandas DataFrame."""
     results = pd.DataFrame(participant_results_dict)
-    results = results.transpose()
     # Move the index (outer dict keys) into a column
     results.reset_index(inplace=True)
     # Rename the new column to 'participant_id'
@@ -138,32 +137,45 @@ def assemble_results_df(participant_results_dict: dict) -> pd.DataFrame:
 
 
 def main(data_zipfile: str,
-         output_file: str,
+         outdir: str,
          participant_id_variable_name: str = DEFAULT_PARTICIPANT_ID_LABEL,
          ):
     data_zipfile = os.path.abspath(data_zipfile)
+    experiments = get_experiment_names(data_zipfile)
     participant_datafiles = get_participant_data_files(data_zipfile, participant_id_variable_name)
     participant_results = {
         participant_id: process_participant_results(experiment_files_dict)
         for participant_id, experiment_files_dict in participant_datafiles.items()
     }
-    # Assemble DataFrame with processed results
-    results = assemble_results_df(participant_results)
-    # Write results DataFrame to output file
-    outdir = os.path.dirname(os.path.abspath(output_file))
+
+    # Invert results such that they are indexed by experiment, experiment result fields, then participant ID
+    experiment_results = defaultdict(lambda: defaultdict(lambda: {}))
+    for experiment in experiments:
+        for participant in participant_results:
+            exp_participant_results = participant_results[participant][experiment]
+            for field, value in exp_participant_results.items():
+                experiment_results[experiment][field][participant] = value
+
+    # Create separate summary file with all participants' results for each experiment in specified outdir
     os.makedirs(outdir, exist_ok=True)
-    results.to_csv(output_file, index=False)
-    logger.info(f"Extracted experiment results to {output_file}")
+    for experiment, exp_results in experiment_results.items():
+        outfile = os.path.join(outdir, experiment + ".csv")
+
+        # Assemble DataFrame with processed results
+        results = assemble_results_df(exp_results)
+        # Write results DataFrame to output file
+        results.to_csv(outfile, index=False)
+        logger.info(f"Extracted experiment <{experiment}> results to {outfile}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Extract PsyToolkit experiment results from zip file.")
     parser.add_argument('--data', required=True, help='Path to data zip file')
-    parser.add_argument('--outfile', required=True, help='Path to output data file')
+    parser.add_argument('--outdir', required=True, help='Path to output directory')
     parser.add_argument('--participant_id_label', default=DEFAULT_PARTICIPANT_ID_LABEL, help='Participant ID variable label')
     args = parser.parse_args()
     main(
         data_zipfile=args.data,
-        output_file=args.outfile,
+        outdir=args.outdir,
         participant_id_variable_name=args.participant_id_label,
     )
