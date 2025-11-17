@@ -3,7 +3,7 @@ from statistics import mean
 
 # PsyToolkit Experiment Documentation: https://www.psytoolkit.org/experiment-library/flanker_arrows.html
 
-def main(results_file):
+def main(results_file: str) -> dict:
     results = pd.read_csv(results_file, sep=" ", header=None, names=["stimulus", "condition", "status", "time"])
     # Accuracy for congruent condition
     congruent_trials = results[results["condition"] == 1]
