@@ -34,21 +34,19 @@ python3 extract_psytoolkit_results.py --data /path/to/your/psytoolkit/results/zi
 The results CSV file will list test subject IDs and experiments as columns, with one line per test subject with that test subject's extracted measures per experiment.
 
 ## Currently supported experiments
-We presently support the following PsyToolkit psychometric experiments:
+We presently support the following PsyToolkit psychometric experiments and extract the following metrics:
 
 - [digitspan](https://www.psytoolkit.org/experiment-library/digitspan.html)
-
-    -> Extracted measure: Length of longest digit sequence successfully recalled twice.
+    - Length of longest digit sequence successfully recalled twice
+    - Number of successful trials before failure
 
 - [flanker-arrows](https://www.psytoolkit.org/experiment-library/flanker_arrows.html)
-    -> Extracted measures:
-        - Counts of congruent and incongruent trials
-        - Counts of correct, incorrect, and "too slow" trials
-        - Accuracy in congruent and incongruent conditions
-        - Mean reaction times for correctly answered trials in both congruent and incongruent conditions
-        - Mean reaction time in trials which were "too slow" 
-        - Overall mean reaction time
+    - Counts of congruent and incongruent trials
+    - Counts of correct, incorrect, and "too slow" trials
+    - Accuracy in congruent and incongruent conditions
+    - Mean reaction times for correctly answered trials in both congruent and incongruent conditions
+    - Mean reaction time in trials which were "too slow"
+    - Overall mean reaction time
 
 - [nback-2](https://www.psytoolkit.org/experiment-library/nback2.html)
-
-    -> Extracted measure: Average success rate.
+    - Average success rate
