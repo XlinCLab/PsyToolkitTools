@@ -41,8 +41,13 @@ We presently support the following PsyToolkit psychometric experiments:
     -> Extracted measure: Length of longest digit sequence successfully recalled twice.
 
 - [flanker-arrows](https://www.psytoolkit.org/experiment-library/flanker_arrows.html)
-
-    -> Extracted measure: Average reaction time.
+    -> Extracted measures:
+        - Counts of congruent and incongruent trials
+        - Counts of correct, incorrect, and "too slow" trials
+        - Accuracy in congruent and incongruent conditions
+        - Mean reaction times for correctly answered trials in both congruent and incongruent conditions
+        - Mean reaction time in trials which were "too slow" 
+        - Overall mean reaction time
 
 - [nback-2](https://www.psytoolkit.org/experiment-library/nback2.html)
 
