@@ -21,14 +21,14 @@ Survey results downloaded from PsyToolkit will be in `.zip` file format.
 
 The script `extract_psytoolkit_results.py` will extract such a zip file and further extract the relevant measures per experiment per participant to a single CSV file. Required inputs to this script are:
 - File path to the zip file downloaded from PsyToolkit
-- File path to a desired output CSV file
+- File path to a desired output directory, which is where resulting CSV files will be saved for each experiment
 
 Optional input:
 - Label used in the results files to indicate participant IDs. If not provided, this is by default the string `versuchspersonenkennung` ("test subject identifier" in German).
 
 Example command syntax:
 ```
-python3 extract_psytoolkit_results.py --data /path/to/your/psytoolkit/results/zip/file.zip --outfile /path/to/your/desired/results/file.csv 
+python3 extract_psytoolkit_results.py --data /path/to/your/psytoolkit/results/zip/file.zip --outdir /path/to/your/desired/results/outdir 
 ```
 
 The results CSV file will list test subject IDs and experiments as columns, with one line per test subject with that test subject's extracted measures per experiment.
