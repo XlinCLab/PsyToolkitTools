@@ -5,16 +5,18 @@ from statistics import mean
 
 def main(results_file: str) -> dict:
     results = pd.read_csv(results_file, sep=" ", header=None, names=["stimulus", "condition", "status", "time"])
+    # Overall accuracy
+    overall_accuracy = mean(results["status"])
     # Accuracy for congruent condition
     congruent_trials = results[results["condition"] == 1]
     n_congruent_trials = len(congruent_trials)
     congruent_correct = congruent_trials[congruent_trials["status"] == 1]
     congruent_accuracy = len(congruent_correct) / n_congruent_trials
     # Mean reaction time for correct congruent trials
-    if len(congruent_correct) > 0:
-        mean_rt_correct_congruent = mean(congruent_correct["time"])
-    else:
-        mean_rt_correct_congruent = pd.NA
+    mean_rt_correct_congruent = mean(congruent_correct["time"]) if len(congruent_correct) > 0 else pd.NA
+    # Mean reaction time for incorrect congruent trials
+    congruent_incorrect = congruent_trials[congruent_trials["status"] == 0]
+    mean_rt_incorrect_congruent = mean(congruent_incorrect["time"]) if len(congruent_incorrect) > 0 else pd.NA
 
     # Accuracy for incongruent condition
     incongruent_trials = results[results["condition"] == 0]
@@ -22,10 +24,10 @@ def main(results_file: str) -> dict:
     incongruent_correct = incongruent_trials[incongruent_trials["status"] == 1]
     incongruent_accuracy = len(incongruent_correct) / n_incongruent_trials
     # Mean reaction time for correct incongruent trials
-    if len(incongruent_correct) > 0:
-        mean_rt_correct_incongruent = mean(incongruent_correct["time"])
-    else:
-        mean_rt_correct_incongruent = pd.NA
+    mean_rt_correct_incongruent = mean(incongruent_correct["time"]) if len(incongruent_correct) > 0 else pd.NA
+    # Mean reaction time for incorrect congruent trials
+    incongruent_incorrect = incongruent_trials[incongruent_trials["status"] == 0]
+    mean_rt_incorrect_incongruent = mean(incongruent_incorrect["time"]) if len(incongruent_incorrect) > 0 else pd.NA
 
     # "Too slow" trials: raw number and mean reaction time
     too_slow_trials = results[results["status"] == 3]
@@ -50,10 +52,13 @@ def main(results_file: str) -> dict:
         "n_correct_trials": n_correct_trials,
         "n_incorrect_trials": n_incorrect_trials,
         "n_too_slow_trials": n_too_slow_trials,
+        "accuracy_overall": overall_accuracy,
         "accuracy_congruent": congruent_accuracy,
         "accuracy_incongruent": incongruent_accuracy,
         "rt_congruent_correct": mean_rt_correct_congruent,
+        "rt_congruent_incorrect": mean_rt_incorrect_congruent,
         "rt_incongruent_correct": mean_rt_correct_incongruent,
+        "rt_incongruent_incorrect": mean_rt_incorrect_incongruent,
         "rt_too_slow": mean_rt_too_slow, 
         "rt_overall": overall_mean_reaction_time,
     }
