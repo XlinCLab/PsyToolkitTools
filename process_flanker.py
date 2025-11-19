@@ -6,7 +6,8 @@ from statistics import mean
 def main(results_file: str) -> dict:
     results = pd.read_csv(results_file, sep=" ", header=None, names=["stimulus", "condition", "status", "time"])
     # Overall accuracy
-    overall_accuracy = mean(results["status"])
+    n_correct_overall = len(results[results["status"] == 1])
+    overall_accuracy = n_correct_overall / len(results)
     # Accuracy for congruent condition
     congruent_trials = results[results["condition"] == 1]
     n_congruent_trials = len(congruent_trials)
