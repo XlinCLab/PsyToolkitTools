@@ -45,6 +45,10 @@ def unzip(zip_filepath: str, unzip_to: str = None) -> str:
 
 def get_experiment_names(unzipped_directory_path: str) -> set[str]:
     """Extract names of experiments from within an unzipped PsyToolkit results directory."""
+    # Unzip if not yet done
+    if unzipped_directory_path.endswith(".zip"):
+        logger.info(f"Unzipping {unzipped_directory_path}")
+        unzipped_directory_path = unzip(unzipped_directory_path)
     exp_data_dir = os.path.join(unzipped_directory_path, "experiment_data")
     exp_files = os.listdir(exp_data_dir)
     exp_names = set(exp_file.split(".")[0] for exp_file in exp_files)
