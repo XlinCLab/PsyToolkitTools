@@ -49,4 +49,5 @@ We presently support the following PsyToolkit psychometric experiments and extra
     - Overall mean reaction time
 
 - [nback-2](https://www.psytoolkit.org/experiment-library/nback2.html)
-    - Average success rate
+    - Mean accuracy overall (across both conditions)
+    - Mean accuracy and raw counts of correct vs. incorrect trials in each condition (matching / non-matching)
