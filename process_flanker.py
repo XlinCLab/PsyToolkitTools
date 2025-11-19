@@ -49,6 +49,7 @@ def main(results_file: str) -> dict:
 
     # Extract overall mean reaction time
     overall_mean_reaction_time = mean(results["time"])
+    rt_overall_minus_too_slow = mean(results[results["status"] != TOO_SLOW_CODING]["time"])
 
 
     # Assemble dictionary of summarized results
@@ -67,6 +68,7 @@ def main(results_file: str) -> dict:
         "rt_incongruent_incorrect": mean_rt_incorrect_incongruent,
         "rt_too_slow": mean_rt_too_slow, 
         "rt_overall": overall_mean_reaction_time,
+        "rt_overall_minus_too_slow": rt_overall_minus_too_slow,
     }
 
     return processed_results
