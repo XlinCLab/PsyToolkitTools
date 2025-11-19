@@ -1,6 +1,7 @@
 # PsyToolkit Experiment Documentation: https://www.psytoolkit.org/experiment-library/digitspan.html
 
 from collections import defaultdict
+from statistics import mean
 
 
 def main(results_file: str) -> dict:
@@ -56,8 +57,16 @@ def main(results_file: str) -> dict:
     last_trial_n = max(trials.keys())
     longest_sequence_length = trials[last_trial_n]["best_so_far"]
 
+    # Average reaction time across all trials
+    average_rt_per_trial = [
+        mean([float(val) for val in trial_data["reactionTimes"]])
+        for _, trial_data in trials.items()
+    ]
+    overall_average_rt = mean(average_rt_per_trial)
+
     processed_results = {
         "longest_seq_len": longest_sequence_length,
         "n_trials_before_failure": n_successful_trials,
+        "overall_mean_rt": overall_average_rt,
     }
     return processed_results
