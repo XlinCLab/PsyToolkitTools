@@ -39,15 +39,17 @@ We presently support the following PsyToolkit psychometric experiments and extra
 - [digitspan](https://www.psytoolkit.org/experiment-library/digitspan.html)
     - Length of longest digit sequence successfully recalled twice
     - Number of successful trials before failure
+    - Mean reaction time
 
 - [flanker-arrows](https://www.psytoolkit.org/experiment-library/flanker_arrows.html)
     - Counts of congruent and incongruent trials
     - Counts of correct, incorrect, and "too slow" trials
-    - Accuracy in congruent and incongruent conditions
+    - Accuracy overall and in congruent vs. incongruent conditions
     - Mean reaction times for correctly answered trials in both congruent and incongruent conditions
     - Mean reaction time in trials which were "too slow"
-    - Overall mean reaction time
+    - Overall mean reaction time, including and excluding "too slow" trials
 
 - [nback-2](https://www.psytoolkit.org/experiment-library/nback2.html)
     - Mean accuracy overall (across both conditions)
     - Mean accuracy and raw counts of correct vs. incorrect trials in each condition (matching / non-matching)
+    - Mean reaction times per condition and outcome
